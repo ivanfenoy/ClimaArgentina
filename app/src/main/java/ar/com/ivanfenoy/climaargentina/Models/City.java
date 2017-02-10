@@ -15,6 +15,11 @@ public class City implements Parcelable {
 
     public String actualState;
     public String actualDegree;
+    public String thermal;
+    public String visibility;
+    public String humidity;
+    public String pressure;
+    public String wind;
 
     public ArrayList<Day> listDays = new ArrayList<>();
 

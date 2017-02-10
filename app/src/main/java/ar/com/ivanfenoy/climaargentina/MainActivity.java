@@ -1,10 +1,12 @@
 package ar.com.ivanfenoy.climaargentina;
 
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
@@ -21,11 +23,14 @@ import java.util.ArrayList;
 import ar.com.ivanfenoy.climaargentina.Adapters.PagerCitiesAdapter;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
+    @Bind(R.id.bar_toolbar)Toolbar mToolbar;
+    @Bind(R.id.pager_cities)ViewPager mPagerCities;
 
     private City mCity;
-    private ViewPager mPagerCities;
     private PagerAdapter mPagerCitiesAdapter;
     private boolean callFinished = false;
 
@@ -43,15 +48,44 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        ButterKnife.bind(this);
+        if(mToolbar != null) {
+            setSupportActionBar(mToolbar);
+            mToolbar.setContentInsetsAbsolute(0, 0);
+        }
+
+
         new CountDownTimer(TIMEOUT_MS, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(callFinished){
-                    ArrayList<City> wListCities = new ArrayList<>();
+                    final ArrayList<City> wListCities = new ArrayList<>();
                     wListCities.add(mCity);
-                    mPagerCities = (ViewPager) findViewById(R.id.pager_cities);
+                    wListCities.add(mCity);
                     mPagerCitiesAdapter = new PagerCitiesAdapter(getSupportFragmentManager(), wListCities);
                     mPagerCities.setAdapter(mPagerCitiesAdapter);
+                    mPagerCities.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                        @Override
+                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                        }
+
+                        @Override
+                        public void onPageSelected(int position) {
+                            setTitle(wListCities.get(position).city);
+                        }
+
+                        @Override
+                        public void onPageScrollStateChanged(int state) {
+
+                        }
+                    });
+                    setTitle(wListCities.get(0).city);
                     this.cancel();
                 }
             }
@@ -62,16 +96,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }.start();
 
+    }
 
-
-//        // get our folding cell
-//        final FoldingCell fc = (FoldingCell) findViewById(R.id.folding_cell);
-//        fc.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                fc.toggle(false);
-//            }
-//        });
+    public void setTitle(String pTitle){
+        mToolbar.setTitle(pTitle);
     }
 
     public void getActualState() throws IOException {
@@ -90,16 +118,17 @@ public class MainActivity extends AppCompatActivity {
                     Element wSpanTempText = wDoc.select("span.temp_texto").first();
                     String wNowTempText = wSpanTempText.html();
 
-                    String wExtraInfo = "";
-                    Elements wTable = wDoc.select("table.texto_temp_chico > tr");
-                    for (Element wElement: wTable) {
-                        Elements wTds = wElement.select("td");
-                        wExtraInfo += wTds.get(0).html() + " " + wTds.get(1).html() + "\n";
-                    }
-
                     mCity.city = wCity;
                     mCity.actualDegree = wNowTemp;
                     mCity.actualState = wNowTempText;
+
+                    Elements wTable = wDoc.select("table.texto_temp_chico > tBody > tr");
+                    mCity.thermal = wTable.get(0).select("td").get(1).html();
+                    mCity.visibility = wTable.get(1).select("td").get(1).html();
+                    mCity.humidity = wTable.get(2).select("td").get(1).html();
+                    mCity.pressure = wTable.get(3).select("td").get(1).html();
+                    mCity.wind = wTable.get(4).select("td").get(1).html();
+
 
 //                    TextView txttitle = (TextView) findViewById(R.id.title);
 //                    txttitle.setText(wNowTemp);

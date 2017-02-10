@@ -3,4 +3,15 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="lbl_detail">Detalle</string>
+    <string name="lbl_thermal">Sensación térmica:</string>
+    <string name="lbl_visibility">Visibilidad:</string>
+    <string name="lbl_humidity">Humedad:</string>
+    <string name="lbl_pressure">Presión:</string>
+    <string name="lbl_wind">Viento:</string>
+    <string name="lbl_today">Hoy</string>
+    <string name="lbl_max_degree">Máxima:</string>
+    <string name="lbl_min_degree">Mínima:</string>
+    <string name="lbl_morning">Mañana:</string>
+    <string name="lbl_night">Noche:</string>
 </resources>
