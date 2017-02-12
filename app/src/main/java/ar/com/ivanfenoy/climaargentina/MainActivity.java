@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private City mCity;
     private PagerAdapter mPagerCitiesAdapter;
-    private boolean callFinished = false;
+    private int mCallsFinished = 0;
 
     private static final long TIMEOUT_MS = 5000;
     @Override
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         new CountDownTimer(TIMEOUT_MS, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if(callFinished){
+                if(mCallsFinished == 2){
                     final ArrayList<City> wListCities = new ArrayList<>();
                     wListCities.add(mCity);
                     wListCities.add(mCity);
@@ -129,9 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     mCity.pressure = wTable.get(3).select("td").get(1).html();
                     mCity.wind = wTable.get(4).select("td").get(1).html();
 
-
-//                    TextView txttitle = (TextView) findViewById(R.id.title);
-//                    txttitle.setText(wNowTemp);
+                    mCallsFinished ++;
                 } catch (IOException e) {
                     if(wDoc != null){
                         Elements wErrors = wDoc.select("p.texto_verde");
@@ -152,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/pronostico_movil.php?provincia=21&ciudad=Rosario").get();
 
-                    Elements wDivs = wDoc.select("div#pron2");
+                    Elements wDivs = wDoc.select("div#pron");
 
                     for (Element wElement: wDivs) {
                         Day wDay = new Day();
@@ -161,14 +159,19 @@ public class MainActivity extends AppCompatActivity {
                         wDay.day = wTrs.get(0).select("td").first().html();
 
                         //morning image
-                        wDay.morningImage = wTrs.get(1).select("td").get(0).select("img").first().attr("src").replace("../../..", "http://www.smn.gov.ar");
+                        wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").attr("src");
                         //night image
-                        wDay.nightImage = wTrs.get(1).select("td").get(1).select("img").first().attr("src").replace("../../..", "http://www.smn.gov.ar");
+                        wDay.nightImage = "http://www.smn.gov.ar/mobile/" +  wTrs.get(1).select("td > img").attr("src");
 
                         //temps states
                         Elements wPs = wElement.select("p");
-                        wDay.morningText = wPs.get(0).html();
-                        wDay.nightText = wPs.get(1).html();
+                        if(wPs.size() > 1) { //Significa que ya no aparece el clima de la mañana
+                            wDay.morningText = wPs.get(0).html();
+                            wDay.nightText = wPs.get(1).html();
+                        }
+                        else{
+                            wDay.nightText = wPs.get(0).html();
+                        }
 
                         //temps
                         wDay.minDegree = wElement.select("table.texto_blanco").first().select("tr").get(0).select("td").get(1).html();
@@ -176,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
                         mCity.listDays.add(wDay);
                     }
-                    callFinished = true;
+                    mCallsFinished ++;
 
                 } catch (IOException e) {
                     if(wDoc != null){
