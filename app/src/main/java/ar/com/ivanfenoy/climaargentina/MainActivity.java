@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeModule;
+import com.joanzapata.iconify.fonts.WeathericonsModule;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.jsoup.Jsoup;
@@ -130,13 +133,14 @@ public class MainActivity extends AppCompatActivity {
                     mCity.wind = wTable.get(4).select("td").get(1).html();
 
                     mCallsFinished ++;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     if(wDoc != null){
                         Elements wErrors = wDoc.select("p.texto_verde");
                         if(!wErrors.isEmpty()){
                             String wError = wErrors.first().html();
                         }
                     }
+                    mCallsFinished ++;
                 }
             }
         };
@@ -151,6 +155,9 @@ public class MainActivity extends AppCompatActivity {
                     wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/pronostico_movil.php?provincia=21&ciudad=Rosario").get();
 
                     Elements wDivs = wDoc.select("div#pron");
+                    if(wDivs.size() == 0){
+                        wDivs = wDoc.select("div#pron2");
+                    }
 
                     for (Element wElement: wDivs) {
                         Day wDay = new Day();
@@ -159,9 +166,20 @@ public class MainActivity extends AppCompatActivity {
                         wDay.day = wTrs.get(0).select("td").first().html();
 
                         //morning image
-                        wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").attr("src");
+                        if(wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")){
+                            wDay.morningImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                        }
+                        else{
+                            wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
+                        }
+
                         //night image
-                        wDay.nightImage = "http://www.smn.gov.ar/mobile/" +  wTrs.get(1).select("td > img").attr("src");
+                        if(wTrs.get(1).select("td > img").get(1).attr("src").contains("../../..")){
+                            wDay.nightImage = wTrs.get(1).select("td > img").get(1).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                        }
+                        else{
+                            wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(1).attr("src");
+                        }
 
                         //temps states
                         Elements wPs = wElement.select("p");
@@ -188,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                             String wError = wErrors.first().html();
                         }
                     }
+                    mCallsFinished ++;
                 }
             }
         };
