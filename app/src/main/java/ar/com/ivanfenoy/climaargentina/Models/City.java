@@ -21,6 +21,9 @@ public class City implements Parcelable {
     public String pressure;
     public String wind;
 
+    public String actualError = "";
+    public String nextDaysError = "";
+
     public ArrayList<Day> listDays = new ArrayList<>();
 
 

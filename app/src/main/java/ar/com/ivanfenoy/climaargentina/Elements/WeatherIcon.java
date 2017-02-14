@@ -20,7 +20,7 @@ public class WeatherIcon extends IconTextView {
                 if(StringSimilarity.similarity(name, "depejado") > 0.8){
                     setText("{wi_yahoo_31}");
                 }
-                else if(StringSimilarity.similarity(name, "algonublado") > 0.8){
+                else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
                     setText("{wi_yahoo_33}");
                 }
                 else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
@@ -56,7 +56,7 @@ public class WeatherIcon extends IconTextView {
                 if(StringSimilarity.similarity(name, "depejado") > 0.8){
                     setText("{wi_yahoo_32}");
                 }
-                else if(StringSimilarity.similarity(name, "algonublado") > 0.8){
+                else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
                     setText("{wi_yahoo_34}");
                 }
                 else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
@@ -97,7 +97,7 @@ public class WeatherIcon extends IconTextView {
                 if(StringSimilarity.similarity(name, "depejado") > 0.8){
                     setText("{wi_yahoo_31}");
                 }
-                else if(StringSimilarity.similarity(name, "algonublado") > 0.8){
+                else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
                     setText("{wi_yahoo_33}");
                 }
                 else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
@@ -133,7 +133,7 @@ public class WeatherIcon extends IconTextView {
                 if(StringSimilarity.similarity(name, "depejado") > 0.8){
                     setText("{wi_yahoo_32}");
                 }
-                else if(StringSimilarity.similarity(name, "algonublado") > 0.8){
+                else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
                     setText("{wi_yahoo_34}");
                 }
                 else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){

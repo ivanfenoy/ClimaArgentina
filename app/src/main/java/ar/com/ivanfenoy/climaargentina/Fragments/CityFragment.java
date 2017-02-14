@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ public class CityFragment extends Fragment {
     @Bind(R.id.pressure_value)TextView mPressure;
     @Bind(R.id.wind_value)TextView mWind;
 
+    @Bind(R.id.ll_today)LinearLayout mLlToday;
     @Bind(R.id.today_max_degree)TextView mTodayMaxDegree;
     @Bind(R.id.today_min_degree)TextView mTodayMinDegree;
     @Bind(R.id.today_morning_text)TextView mTodayMorningText;
@@ -47,18 +49,16 @@ public class CityFragment extends Fragment {
     @Bind(R.id.img_night)WeatherIcon mTodayNightImage;
 
     //NextDays
+    @Bind(R.id.ll_next_days)LinearLayout mLlNextDays;
     @Bind(R.id.img_day_1)WeatherIcon mImgDay1;
     @Bind(R.id.img_day_2)WeatherIcon mImgDay2;
     @Bind(R.id.img_day_3)WeatherIcon mImgDay3;
-//    @Bind(R.id.img_day_4)ImageView mImgDay4;
     @Bind(R.id.degree_day_1)TextView mDegreeDay1;
     @Bind(R.id.degree_day_2)TextView mDegreeDay2;
     @Bind(R.id.degree_day_3)TextView mDegreeDay3;
-//    @Bind(R.id.degree_day_4)TextView mDegreeDay4;
     @Bind(R.id.day_1)TextView mDay1;
     @Bind(R.id.day_2)TextView mDay2;
     @Bind(R.id.day_3)TextView mDay3;
-//    @Bind(R.id.day_4)TextView mDay4;
 
     private View mRootView;
     private static final String ARG_CITY = "city";
@@ -90,8 +90,6 @@ public class CityFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_city, container, false);
         ButterKnife.bind(this, mRootView);
 
-        mCurrentState.setText(mCity.actualState);
-        mCurrentDegree.setText(mCity.actualDegree);
 
         return mRootView;
     }
@@ -115,40 +113,42 @@ public class CityFragment extends Fragment {
             }
         });
 
-        mThermal.setText(mCity.thermal);
-        mVisibility.setText(mCity.visibility);
-        mHumidity.setText(mCity.humidity);
-        mPressure.setText(mCity.pressure);
-        mWind.setText(mCity.wind);
+        //Actual state
+        if(mCity.actualError.isEmpty()) {
+            mCurrentState.setText(mCity.actualState);
+            mCurrentDegree.setText(mCity.actualDegree);
+            mThermal.setText(mCity.thermal);
+            mVisibility.setText(mCity.visibility);
+            mHumidity.setText(mCity.humidity);
+            mPressure.setText(mCity.pressure);
+            mWind.setText(mCity.wind);
+        }
+        else{
 
-        mTodayMaxDegree.setText(mCity.listDays.get(0).maxDegree);
-        mTodayMinDegree.setText(mCity.listDays.get(0).minDegree);
-        mTodayMorningText.setText(Util.capitalize(mCity.listDays.get(0).morningText));
-        mTodayNightText.setText(Util.capitalize(mCity.listDays.get(0).nightText));
-        mTodayMorningImage.setIcon(mCity.listDays.get(0).morningImage);
-        mTodayNightImage.setIcon(mCity.listDays.get(0).nightImage);
-//        Picasso.with(getActivity()).load(mCity.listDays.get(0).morningImage).into(mTodayMorningImage);
-//        Picasso.with(getActivity()).load(mCity.listDays.get(0).nightImage).into(mTodayNightImage);
+        }
+
+        //NextDays
+        if(mCity.actualError.isEmpty()) {
+            mTodayMaxDegree.setText(mCity.listDays.get(0).maxDegree);
+            mTodayMinDegree.setText(mCity.listDays.get(0).minDegree);
+            mTodayMorningText.setText(Util.capitalize(mCity.listDays.get(0).morningText));
+            mTodayNightText.setText(Util.capitalize(mCity.listDays.get(0).nightText));
+            mTodayMorningImage.setIcon(mCity.listDays.get(0).morningImage);
+            mTodayNightImage.setIcon(mCity.listDays.get(0).nightImage);
 
 
-//        Picasso.with(getActivity()).load(mCity.listDays.get(1).morningImage).into(mImgDay1);
-        mImgDay1.setIcon(mCity.listDays.get(1).morningImage);
-        mDegreeDay1.setText(mCity.listDays.get(1).minDegree + "/" + mCity.listDays.get(1).maxDegree);
-        mDay1.setText(mCity.listDays.get(1).day);
+            mImgDay1.setIcon(mCity.listDays.get(1).morningImage);
+            mDegreeDay1.setText(mCity.listDays.get(1).minDegree + "/" + mCity.listDays.get(1).maxDegree);
+            mDay1.setText(mCity.listDays.get(1).day);
 
-//        Picasso.with(getActivity()).load(mCity.listDays.get(2).morningImage).into(mImgDay2);
-        mImgDay2.setIcon(mCity.listDays.get(2).morningImage);
-        mDegreeDay2.setText(mCity.listDays.get(2).minDegree + "/" + mCity.listDays.get(2).maxDegree);
-        mDay2.setText(mCity.listDays.get(2).day);
+            mImgDay2.setIcon(mCity.listDays.get(2).morningImage);
+            mDegreeDay2.setText(mCity.listDays.get(2).minDegree + "/" + mCity.listDays.get(2).maxDegree);
+            mDay2.setText(mCity.listDays.get(2).day);
 
-//        Picasso.with(getActivity()).load(mCity.listDays.get(3).morningImage).into(mImgDay3);
-        mImgDay3.setIcon(mCity.listDays.get(3).morningImage);
-        mDegreeDay3.setText(mCity.listDays.get(3).minDegree + "/" + mCity.listDays.get(3).maxDegree);
-        mDay3.setText(mCity.listDays.get(3).day);
-
-//        Picasso.with(getActivity()).load(mCity.listDays.get(4).morningImage).into(mImgDay4);
-//        mDegreeDay4.setText(mCity.listDays.get(4).minDegree + "/" + mCity.listDays.get(4).maxDegree);
-//        mDay4.setText(mCity.listDays.get(4).day);
+            mImgDay3.setIcon(mCity.listDays.get(3).morningImage);
+            mDegreeDay3.setText(mCity.listDays.get(3).minDegree + "/" + mCity.listDays.get(3).maxDegree);
+            mDay3.setText(mCity.listDays.get(3).day);
+        }
 
     }
 

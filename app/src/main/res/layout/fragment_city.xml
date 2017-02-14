@@ -25,7 +25,6 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/current_degree"
                     android:textColor="@color/white"
-                    android:text="dummy state"
                     android:textSize="12sp"/>
 
                 <TextView
@@ -33,9 +32,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:text="33ºC"
                     android:textColor="@color/white"
                     android:textSize="50sp"/>
+
+                <TextView
+                    android:id="@+id/current_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"/>
 
             </RelativeLayout>
 
@@ -235,14 +241,14 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
                             android:textSize="12sp"
-                            android:text="@string/lbl_max_degree"/>
+                            android:text="@string/lbl_min_degree"/>
 
                         <TextView
-                            android:id="@+id/today_max_degree"
+                            android:id="@+id/today_min_degree"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="16sp"
                             android:gravity="center"
                             android:textStyle="bold"/>
 
@@ -260,14 +266,14 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
                             android:textSize="12sp"
-                            android:text="@string/lbl_min_degree"/>
+                            android:text="@string/lbl_max_degree"/>
 
                         <TextView
-                            android:id="@+id/today_min_degree"
+                            android:id="@+id/today_max_degree"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:textColor="@color/white"
-                            android:textSize="12sp"
+                            android:textSize="16sp"
                             android:gravity="center"
                             android:textStyle="bold"/>
 

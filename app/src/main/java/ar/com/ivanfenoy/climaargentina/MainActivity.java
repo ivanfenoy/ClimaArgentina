@@ -2,15 +2,20 @@ package ar.com.ivanfenoy.climaargentina;
 
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.Iconify;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.fonts.FontAwesomeModule;
 import com.joanzapata.iconify.fonts.WeathericonsModule;
 import com.ramotion.foldingcell.FoldingCell;
@@ -24,6 +29,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import ar.com.ivanfenoy.climaargentina.Adapters.PagerCitiesAdapter;
+import ar.com.ivanfenoy.climaargentina.Fragments.AddCityFragment;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
 import butterknife.Bind;
@@ -137,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     if(wDoc != null){
                         Elements wErrors = wDoc.select("p.texto_verde");
                         if(!wErrors.isEmpty()){
-                            String wError = wErrors.first().html();
+                            mCity.actualError = wErrors.first().html();
                         }
                     }
                     mCallsFinished ++;
@@ -203,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     if(wDoc != null){
                         Elements wErrors = wDoc.select("p.texto_verde");
                         if(!wErrors.isEmpty()){
-                            String wError = wErrors.first().html();
+                            mCity.nextDaysError = wErrors.first().html();
                         }
                     }
                     mCallsFinished ++;
@@ -211,6 +217,34 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         wNextDaysStateThread.start();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //to setup plus icon in toolbar
+        menu.findItem(R.id.action_add).setIcon(
+                new IconDrawable(this, FontAwesomeIcons.fa_plus)
+                        .colorRes(R.color.white)
+                        .actionBarSize());
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+        int id = item.getItemId();
+        if(id == R.id.action_add) {
+            newCity();
+            return true;
+        }
+        return false;
+    }
+
+    public void newCity() {
+        FragmentManager fm = getSupportFragmentManager();
+        AddCityFragment wDialog = new AddCityFragment();
+        wDialog.show(fm, "");
     }
 
 }
