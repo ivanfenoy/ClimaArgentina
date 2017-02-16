@@ -9,18 +9,24 @@
         android:id="@+id/sp_states"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:entries="@array/list_states" />
+        android:entries="@array/list_states"
+        android:backgroundTint="@color/colorPrimary"/>
 
     <Spinner
         android:id="@+id/sp_cities"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:backgroundTint="@color/colorPrimary" />
 
     <Button
+        android:id="@+id/btn_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_gravity="right"
         android:text="@string/lbl_add"
+        android:textColor="@color/colorPrimary"
         style="?android:attr/borderlessButtonStyle" />
 
 </LinearLayout>

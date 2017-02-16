@@ -26,6 +26,11 @@ public class PagerCitiesAdapter extends FragmentStatePagerAdapter {
         return CityFragment.newInstance(mListCities.get(position));
     }
 
+    public void addCity(City pCity){
+        mListCities.add(pCity);
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mListCities.size();

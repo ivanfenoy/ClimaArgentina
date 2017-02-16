@@ -13,6 +13,8 @@ public class City implements Parcelable {
     public int stateId;
     public String city;
 
+    public long lastUpdate;
+
     public String actualState;
     public String actualDegree;
     public String thermal;

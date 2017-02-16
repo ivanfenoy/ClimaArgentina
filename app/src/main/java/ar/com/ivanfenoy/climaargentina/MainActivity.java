@@ -27,8 +27,10 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import ar.com.ivanfenoy.climaargentina.Adapters.PagerCitiesAdapter;
+import ar.com.ivanfenoy.climaargentina.Controllers.SharedPreferencesController;
 import ar.com.ivanfenoy.climaargentina.Fragments.AddCityFragment;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.pager_cities)ViewPager mPagerCities;
 
     private City mCity;
-    private PagerAdapter mPagerCitiesAdapter;
+    private PagerCitiesAdapter mPagerCitiesAdapter;
     private int mCallsFinished = 0;
 
     private static final long TIMEOUT_MS = 5000;
@@ -48,14 +50,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        mCity = new City();
-        try {
-            getActualState();
-            getNextDaysState();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
     }
 
@@ -68,33 +62,55 @@ public class MainActivity extends AppCompatActivity {
             mToolbar.setContentInsetsAbsolute(0, 0);
         }
 
+        final ArrayList<City> wListCities = SharedPreferencesController.getListCities(this);
 
+        mPagerCitiesAdapter = new PagerCitiesAdapter(getSupportFragmentManager(), wListCities);
+        mPagerCities.setAdapter(mPagerCitiesAdapter);
+        mPagerCities.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(wListCities.get(position).city);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        if(wListCities.size() > 0) {
+            setTitle(wListCities.get(0).city);
+        }
+        else{
+            newCity();
+        }
+    }
+
+    public void setTitle(String pTitle){
+        mToolbar.setTitle(pTitle);
+    }
+
+    public void putNewCity(String pCity, int pState){
+        mCity = new City();
+        try {
+            getActualState(pCity);
+            getNextDaysState(pCity, pState);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         new CountDownTimer(TIMEOUT_MS, 500) {
             @Override
             public void onTick(long millisUntilFinished) {
                 if(mCallsFinished == 2){
-                    final ArrayList<City> wListCities = new ArrayList<>();
-                    wListCities.add(mCity);
-                    wListCities.add(mCity);
-                    mPagerCitiesAdapter = new PagerCitiesAdapter(getSupportFragmentManager(), wListCities);
-                    mPagerCities.setAdapter(mPagerCitiesAdapter);
-                    mPagerCities.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                        @Override
-                        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                        }
-
-                        @Override
-                        public void onPageSelected(int position) {
-                            setTitle(wListCities.get(position).city);
-                        }
-
-                        @Override
-                        public void onPageScrollStateChanged(int state) {
-
-                        }
-                    });
-                    setTitle(wListCities.get(0).city);
+                    mPagerCitiesAdapter.addCity(mCity);
+                    mPagerCitiesAdapter.notifyDataSetChanged();
+                    SharedPreferencesController.saveCity(MainActivity.this, mCity);
+                    mCity = null;
                     this.cancel();
                 }
             }
@@ -104,19 +120,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }.start();
-
     }
 
-    public void setTitle(String pTitle){
-        mToolbar.setTitle(pTitle);
-    }
-
-    public void getActualState() throws IOException {
+    public void getActualState(final String pCity) throws IOException {
         Thread wActualStateThread = new Thread() {
             public void run() {
                 Document wDoc = null;
                 try {
-                    wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/estado_movil.php?ciudad=Rosario").get();
+                    wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/estado_movil.php?ciudad=" + pCity).get();
 
                     Element wSpanCity = wDoc.select("span.temp_ciudad").first();
                     String wCity = wSpanCity.html();
@@ -153,12 +164,12 @@ public class MainActivity extends AppCompatActivity {
         wActualStateThread.start();
     }
 
-    public void getNextDaysState() throws IOException {
+    public void getNextDaysState(final String pCity, final int pState) throws IOException {
         Thread wNextDaysStateThread = new Thread() {
             public void run() {
                 Document wDoc = null;
                 try {
-                    wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/pronostico_movil.php?provincia=21&ciudad=Rosario").get();
+                    wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/pronostico_movil.php?provincia="+ pState +"&ciudad=" + pCity).get();
 
                     Elements wDivs = wDoc.select("div#pron");
                     if(wDivs.size() == 0){
@@ -203,6 +214,10 @@ public class MainActivity extends AppCompatActivity {
 
                         mCity.listDays.add(wDay);
                     }
+
+                    Calendar wCal = Calendar.getInstance();
+                    mCity.lastUpdate = wCal.getTimeInMillis();
+
                     mCallsFinished ++;
 
                 } catch (IOException e) {
