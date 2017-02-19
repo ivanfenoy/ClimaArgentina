@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private PagerCitiesAdapter mPagerCitiesAdapter;
     private int mCallsFinished = 0;
 
-    private static final long TIMEOUT_MS = 5000;
+    private static final long TIMEOUT_MS = 15000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void putNewCity(String pCity, int pState){
         mCity = new City();
+        mCity.city = pCity;
+        mCity.stateId = pState;
         try {
             getActualState(pCity);
             getNextDaysState(pCity, pState);
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     mPagerCitiesAdapter.notifyDataSetChanged();
                     SharedPreferencesController.saveCity(MainActivity.this, mCity);
                     mCity = null;
+                    mCallsFinished = 0;
                     this.cancel();
                 }
             }
@@ -138,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     Element wSpanTempText = wDoc.select("span.temp_texto").first();
                     String wNowTempText = wSpanTempText.html();
 
-                    mCity.city = wCity;
+                    mCity.actualImage = wDoc.select("img[width=120px]").first().attr("src");
                     mCity.actualDegree = wNowTemp;
                     mCity.actualState = wNowTempText;
 
@@ -182,20 +185,28 @@ public class MainActivity extends AppCompatActivity {
                         //Day name
                         wDay.day = wTrs.get(0).select("td").first().html();
 
-                        //morning image
-                        if(wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")){
-                            wDay.morningImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
-                        }
-                        else{
-                            wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
-                        }
+                        //images
+                        if(wTrs.get(1).select("td > img").size() > 1) {
+                            //morning image
+                            if (wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")) {
+                                wDay.morningImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                            } else {
+                                wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
+                            }
 
-                        //night image
-                        if(wTrs.get(1).select("td > img").get(1).attr("src").contains("../../..")){
-                            wDay.nightImage = wTrs.get(1).select("td > img").get(1).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                            //night image
+                            if (wTrs.get(1).select("td > img").get(1).attr("src").contains("../../..")) {
+                                wDay.nightImage = wTrs.get(1).select("td > img").get(1).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                            } else {
+                                wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(1).attr("src");
+                            }
                         }
                         else{
-                            wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(1).attr("src");
+                            if (wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")) {
+                                wDay.nightImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
+                            } else {
+                                wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
+                            }
                         }
 
                         //temps states

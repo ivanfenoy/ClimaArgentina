@@ -32,15 +32,19 @@ import butterknife.ButterKnife;
 
 public class CityFragment extends Fragment {
     @Bind(R.id.rl_current_state)RelativeLayout mRlCurrentState;
+    @Bind(R.id.ll_detail_state)LinearLayout mLlDetailState;
     @Bind(R.id.current_state)TextView mCurrentState;
+    @Bind(R.id.img_current_state)WeatherIcon mImgCurrentState;
     @Bind(R.id.current_degree)TextView mCurrentDegree;
+    @Bind(R.id.current_error)TextView mCurrentError;
     @Bind(R.id.thermal_value)TextView mThermal;
     @Bind(R.id.visibility_value)TextView mVisibility;
     @Bind(R.id.humidity_value)TextView mHumidity;
     @Bind(R.id.pressure_value)TextView mPressure;
-    @Bind(R.id.wind_value)TextView mWind;
 
+    @Bind(R.id.wind_value)TextView mWind;
     @Bind(R.id.ll_today)LinearLayout mLlToday;
+    @Bind(R.id.today_lbl)TextView mTodayTitle;
     @Bind(R.id.today_max_degree)TextView mTodayMaxDegree;
     @Bind(R.id.today_min_degree)TextView mTodayMinDegree;
     @Bind(R.id.today_morning_text)TextView mTodayMorningText;
@@ -102,38 +106,48 @@ public class CityFragment extends Fragment {
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                    mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                } else {
-                    mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                //Actual state
+                if(mCity.actualError.isEmpty()) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                        mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    } else {
+                        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    }
+                    int height = mRootView.getMeasuredHeight();
+                    mRlCurrentState.getLayoutParams().height = height - 50;
+                    mRlCurrentState.requestLayout();
+                    mImgCurrentState.setIcon(mCity.actualImage);
+                    mCurrentState.setText(mCity.actualState);
+                    mCurrentDegree.setText(mCity.actualDegree);
+                    mThermal.setText(mCity.thermal);
+                    mVisibility.setText(mCity.visibility);
+                    mHumidity.setText(mCity.humidity);
+                    mPressure.setText(mCity.pressure);
+                    mWind.setText(mCity.wind);
                 }
-                int height = mRootView.getMeasuredHeight();
-                mRlCurrentState.getLayoutParams().height = height - 50;
-                mRlCurrentState.requestLayout();
+                else{
+                    mImgCurrentState.setText("{wi_alien}");
+                    mLlDetailState.setVisibility(View.GONE);
+                    mCurrentDegree.setVisibility(View.GONE);
+                    mCurrentState.setVisibility(View.GONE);
+                    mCurrentError.setText(mCity.actualError);
+                }
+
             }
         });
 
-        //Actual state
-        if(mCity.actualError.isEmpty()) {
-            mCurrentState.setText(mCity.actualState);
-            mCurrentDegree.setText(mCity.actualDegree);
-            mThermal.setText(mCity.thermal);
-            mVisibility.setText(mCity.visibility);
-            mHumidity.setText(mCity.humidity);
-            mPressure.setText(mCity.pressure);
-            mWind.setText(mCity.wind);
-        }
-        else{
-
-        }
-
         //NextDays
-        if(mCity.actualError.isEmpty()) {
+        if(mCity.nextDaysError.isEmpty()) {
             mTodayMaxDegree.setText(mCity.listDays.get(0).maxDegree);
             mTodayMinDegree.setText(mCity.listDays.get(0).minDegree);
-            mTodayMorningText.setText(Util.capitalize(mCity.listDays.get(0).morningText));
+            if(mCity.listDays.get(0).morningText != null && !mCity.listDays.get(0).morningText.isEmpty()) {
+                mTodayMorningText.setText(Util.capitalize(mCity.listDays.get(0).morningText));
+                mTodayMorningImage.setIcon(mCity.listDays.get(0).morningImage);
+            }
+            else{
+                hideMorningInfo();
+            }
             mTodayNightText.setText(Util.capitalize(mCity.listDays.get(0).nightText));
-            mTodayMorningImage.setIcon(mCity.listDays.get(0).morningImage);
             mTodayNightImage.setIcon(mCity.listDays.get(0).nightImage);
 
 
@@ -150,6 +164,12 @@ public class CityFragment extends Fragment {
             mDay3.setText(mCity.listDays.get(3).day);
         }
 
+    }
+
+    private void hideMorningInfo(){
+        mTodayMorningText.setVisibility(View.GONE);
+        mTodayMorningImage.setVisibility(View.GONE);
+        mTodayTitle.setVisibility(View.GONE);
     }
 
 

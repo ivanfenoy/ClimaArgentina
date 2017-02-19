@@ -17,6 +17,7 @@ public class City implements Parcelable {
 
     public String actualState;
     public String actualDegree;
+    public String actualImage;
     public String thermal;
     public String visibility;
     public String humidity;
@@ -40,6 +41,7 @@ public class City implements Parcelable {
         dest.writeString(this.city);
         dest.writeString(this.actualState);
         dest.writeString(this.actualDegree);
+        dest.writeString(this.actualImage);
         dest.writeList(this.listDays);
     }
 
@@ -51,6 +53,7 @@ public class City implements Parcelable {
         this.city = in.readString();
         this.actualState = in.readString();
         this.actualDegree = in.readString();
+        this.actualImage = in.readString();
         this.listDays = new ArrayList<Day>();
         in.readList(this.listDays, Day.class.getClassLoader());
     }
