@@ -16,8 +16,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.helper.StringUtil;
@@ -25,12 +27,15 @@ import org.jsoup.helper.StringUtil;
 import ar.com.ivanfenoy.climaargentina.Elements.WeatherIcon;
 import ar.com.ivanfenoy.climaargentina.MainActivity;
 import ar.com.ivanfenoy.climaargentina.Models.City;
+import ar.com.ivanfenoy.climaargentina.Models.Day;
 import ar.com.ivanfenoy.climaargentina.R;
 import ar.com.ivanfenoy.climaargentina.Utils.Util;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class CityFragment extends Fragment {
+    @Bind(R.id.scroll) ScrollView mScroll;
     @Bind(R.id.rl_current_state)RelativeLayout mRlCurrentState;
     @Bind(R.id.ll_detail_state)LinearLayout mLlDetailState;
     @Bind(R.id.current_state)TextView mCurrentState;
@@ -54,6 +59,9 @@ public class CityFragment extends Fragment {
 
     //NextDays
     @Bind(R.id.ll_next_days)LinearLayout mLlNextDays;
+    @Bind(R.id.ll_day_1)LinearLayout mLlDay1;
+    @Bind(R.id.ll_day_2)LinearLayout mLlDay2;
+    @Bind(R.id.ll_day_3)LinearLayout mLlDay3;
     @Bind(R.id.img_day_1)WeatherIcon mImgDay1;
     @Bind(R.id.img_day_2)WeatherIcon mImgDay2;
     @Bind(R.id.img_day_3)WeatherIcon mImgDay3;
@@ -63,6 +71,14 @@ public class CityFragment extends Fragment {
     @Bind(R.id.day_1)TextView mDay1;
     @Bind(R.id.day_2)TextView mDay2;
     @Bind(R.id.day_3)TextView mDay3;
+
+    @Bind(R.id.expandable_day_x) ExpandableLinearLayout mExpandableDayX;
+    @Bind(R.id.day_x_max_degree)TextView mDayXMaxDegree;
+    @Bind(R.id.day_x_min_degree)TextView mDayXMinDegree;
+    @Bind(R.id.day_x_morning_text)TextView mDayXMorningText;
+    @Bind(R.id.day_x_night_text)TextView mDayXNightText;
+    @Bind(R.id.img_morning_day_x)WeatherIcon mDayXMorningImage;
+    @Bind(R.id.img_night_day_x)WeatherIcon mDayXNightImage;
 
     private View mRootView;
     private static final String ARG_CITY = "city";
@@ -172,5 +188,76 @@ public class CityFragment extends Fragment {
         mTodayTitle.setVisibility(View.GONE);
     }
 
+    @OnClick(R.id.ll_day_1)
+    public void openDay1(){
+        if(!mExpandableDayX.isExpanded()){
+            resetDayscolor();
+            mImgDay1.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDay1.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDegreeDay1.setTextColor(getResources().getColor(R.color.colorPrimary));
+            setUpDayX(mCity.listDays.get(1));
+            mExpandableDayX.expand();
+            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+        else{
+            resetDayscolor();
+            mExpandableDayX.collapse();
+        }
+    }
+
+    @OnClick(R.id.ll_day_2)
+    public void openDay2(){
+        if(!mExpandableDayX.isExpanded()){
+            resetDayscolor();
+            mImgDay2.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDay2.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDegreeDay2.setTextColor(getResources().getColor(R.color.colorPrimary));
+            setUpDayX(mCity.listDays.get(2));
+            mExpandableDayX.expand();
+            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+        else{
+            resetDayscolor();
+            mExpandableDayX.collapse();
+        }
+    }
+
+    @OnClick(R.id.ll_day_3)
+    public void openDay3(){
+        if(!mExpandableDayX.isExpanded()){
+            resetDayscolor();
+            mImgDay3.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDay3.setTextColor(getResources().getColor(R.color.colorPrimary));
+            mDegreeDay3.setTextColor(getResources().getColor(R.color.colorPrimary));
+            setUpDayX(mCity.listDays.get(3));
+            mExpandableDayX.expand();
+            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+        }
+        else{
+            resetDayscolor();
+            mExpandableDayX.collapse();
+        }
+    }
+
+    private void setUpDayX(Day pDay) {
+        mDayXMaxDegree.setText(pDay.maxDegree);
+        mDayXMinDegree.setText(pDay.minDegree);
+        mDayXMorningText.setText(pDay.morningText);
+        mDayXNightText.setText(pDay.nightText);
+        mDayXMorningImage.setIcon(pDay.morningImage);
+        mDayXNightImage.setIcon(pDay.nightImage);
+    }
+
+    private void resetDayscolor(){
+        mImgDay1.setTextColor(getResources().getColor(R.color.white));
+        mDay1.setTextColor(getResources().getColor(R.color.white));
+        mDegreeDay1.setTextColor(getResources().getColor(R.color.white));
+        mImgDay2.setTextColor(getResources().getColor(R.color.white));
+        mDay2.setTextColor(getResources().getColor(R.color.white));
+        mDegreeDay2.setTextColor(getResources().getColor(R.color.white));
+        mImgDay3.setTextColor(getResources().getColor(R.color.white));
+        mDay3.setTextColor(getResources().getColor(R.color.white));
+        mDegreeDay3.setTextColor(getResources().getColor(R.color.white));
+    }
 
 }
