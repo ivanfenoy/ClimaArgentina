@@ -19,6 +19,15 @@
     <string name="lbl_select_city">Seleccione una ciudad</string>
     <string name="lbl_city_dont_selected">Debe seleccionar una ciudad</string>
     <string name="sp_list_cities">SP_LIST_CITIES</string>
+    <string name="update_time">Actualizado el:</string>
+    <string name="updating_city">Actualizando estado del clima...</string>
+    <string name="getting_city">Obteniendo estado del clima...</string>
+    <string name="no_actual_data">Sin información sobre el estado actual del tiempo. Intente nuevamente en unos instantes.</string>
+    <string name="delete_city">Eliminar ciudad</string>
+    <string name="confirm_delete_city">¿Está seguro que desea eliminar la ciudad?</string>
+    <string name="yes">SI</string>
+    <string name="cancel">Cancelar</string>
+    <string name="accept">Aceptar</string>
 
     <string-array name="list_states">
         <item>Capital Federal</item>

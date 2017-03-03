@@ -38,14 +38,6 @@ public class SharedPreferencesController {
         return wCities;
     }
 
-    public static void deleteCity(Context pContext, String pCity){
-        setUpSP(pContext);
-        String wOldCities = getCities(mContext);
-        if(wOldCities.contains(pCity)){
-           wOldCities.replace(pCity + ",", "");
-        }
-    }
-
     public static void saveCity(Context pContext, City pCity){
         setUpSP(pContext);
         ArrayList<City> wListCities = getListCities(pContext);
@@ -65,5 +57,44 @@ public class SharedPreferencesController {
         Type wType = new TypeToken<ArrayList<City>>() {}.getType();
         wListCities = wGson.fromJson(wJson, wType);
         return (wListCities == null)? new ArrayList<City>() : wListCities;
+    }
+
+    public static void updateCity(Context pContext, City pCity){
+        setUpSP(pContext);
+        ArrayList<City> wToRemove = new ArrayList<>();
+        ArrayList<City> wListCities = getListCities(pContext);
+        int wIndex = -1;
+        for (City wItem: wListCities) {
+            if(wItem.stateId == pCity.stateId && wItem.city.equals(pCity.city)){
+                wIndex = wListCities.indexOf(wItem);
+                wToRemove.add(wItem);
+            }
+        }
+        if(wIndex != -1) {
+            wListCities.add(wIndex, pCity);
+            wListCities.removeAll(wToRemove);
+            Gson gson = new Gson();
+            String json = gson.toJson(wListCities);
+            SharedPreferences.Editor wEditor = mSp.edit();
+            wEditor.putString(mContext.getString(R.string.sp_list_cities), json);
+            wEditor.commit();
+        }
+    }
+
+    public static void deleteCity(Context pContext, City pCity){
+        setUpSP(pContext);
+        ArrayList<City> wToRemove = new ArrayList<>();
+        ArrayList<City> wListCities = getListCities(pContext);
+        for (City wItem: wListCities) {
+            if(wItem.stateId == pCity.stateId && wItem.city.equals(pCity.city)){
+                wToRemove.add(wItem);
+            }
+        }
+        wListCities.removeAll(wToRemove);
+        Gson gson = new Gson();
+        String json = gson.toJson(wListCities);
+        SharedPreferences.Editor wEditor = mSp.edit();
+        wEditor.putString(mContext.getString(R.string.sp_list_cities), json);
+        wEditor.commit();
     }
 }

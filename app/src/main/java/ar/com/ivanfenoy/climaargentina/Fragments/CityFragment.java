@@ -1,11 +1,15 @@
 package ar.com.ivanfenoy.climaargentina.Fragments;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -20,11 +24,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
+import com.joanzapata.iconify.widget.IconTextView;
 import com.squareup.picasso.Picasso;
 
 import org.jsoup.helper.StringUtil;
 
+import java.util.Calendar;
+
+import ar.com.ivanfenoy.climaargentina.App;
+import ar.com.ivanfenoy.climaargentina.Controllers.SharedPreferencesController;
 import ar.com.ivanfenoy.climaargentina.Elements.WeatherIcon;
+import ar.com.ivanfenoy.climaargentina.Interfaces.ObjectCallback;
 import ar.com.ivanfenoy.climaargentina.MainActivity;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
@@ -35,11 +45,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class CityFragment extends Fragment {
+    @Bind(R.id.add_city)IconTextView mAddCity;
+    @Bind(R.id.refresh_city)IconTextView mRefreshCity;
+//    @Bind(R.id.swipe) SwipeRefreshLayout mSwipe;
     @Bind(R.id.scroll) ScrollView mScroll;
     @Bind(R.id.rl_current_state)RelativeLayout mRlCurrentState;
     @Bind(R.id.ll_detail_state)LinearLayout mLlDetailState;
     @Bind(R.id.current_state)TextView mCurrentState;
     @Bind(R.id.img_current_state)WeatherIcon mImgCurrentState;
+    @Bind(R.id.img_no_data) ImageView mImgNoData;
     @Bind(R.id.current_degree)TextView mCurrentDegree;
     @Bind(R.id.current_error)TextView mCurrentError;
     @Bind(R.id.thermal_value)TextView mThermal;
@@ -80,9 +94,13 @@ public class CityFragment extends Fragment {
     @Bind(R.id.img_morning_day_x)WeatherIcon mDayXMorningImage;
     @Bind(R.id.img_night_day_x)WeatherIcon mDayXNightImage;
 
+    @Bind(R.id.update_time)TextView mUpdatedTime;
+    @Bind(R.id.back_image) ImageView mBackImage;
+
     private View mRootView;
     private static final String ARG_CITY = "city";
     private City mCity;
+    private Dialog preloader;
 
     public CityFragment() {
     }
@@ -110,7 +128,6 @@ public class CityFragment extends Fragment {
         mRootView = inflater.inflate(R.layout.fragment_city, container, false);
         ButterKnife.bind(this, mRootView);
 
-
         return mRootView;
     }
 
@@ -118,20 +135,40 @@ public class CityFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Calendar wCal = Calendar.getInstance();
+        wCal.setTimeInMillis(mCity.lastUpdate);
+        Calendar wNow = Calendar.getInstance();
+        wNow.add(Calendar.HOUR, -2);
+
+        if(wCal.before(wNow)){
+            updateCity();
+        }
+        initView();
+
+    }
+
+    private void initView() {
         ViewTreeObserver vto = mRootView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 //Actual state
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                int height = mRootView.getMeasuredHeight();
+
+                int wActionBarHeight = 0;
+                TypedValue wTv = new TypedValue();
+                if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, wTv, true))
+                {
+                    wActionBarHeight = TypedValue.complexToDimensionPixelSize(wTv.data,getResources().getDisplayMetrics());
+                }
+                mRlCurrentState.getLayoutParams().height = height - wActionBarHeight;
+
                 if(mCity.actualError.isEmpty()) {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                        mRootView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    } else {
-                        mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                    int height = mRootView.getMeasuredHeight();
-                    mRlCurrentState.getLayoutParams().height = height - 50;
-                    mRlCurrentState.requestLayout();
                     mImgCurrentState.setIcon(mCity.actualImage);
                     mCurrentState.setText(mCity.actualState);
                     mCurrentDegree.setText(mCity.actualDegree);
@@ -140,17 +177,32 @@ public class CityFragment extends Fragment {
                     mHumidity.setText(mCity.humidity);
                     mPressure.setText(mCity.pressure);
                     mWind.setText(mCity.wind);
+
+                    Picasso.with(getActivity()).load(Util.setWheatherBackground(mCity.actualImage)).into(mBackImage);
                 }
                 else{
-                    mImgCurrentState.setText("{wi_alien}");
+                    mImgNoData.setVisibility(View.VISIBLE);
+                    mImgCurrentState.setVisibility(View.GONE);
                     mLlDetailState.setVisibility(View.GONE);
                     mCurrentDegree.setVisibility(View.GONE);
                     mCurrentState.setVisibility(View.GONE);
-                    mCurrentError.setText(mCity.actualError);
+                    mCurrentError.setText(R.string.no_actual_data);
+
+                    Calendar wUpdateTime = Calendar.getInstance();
+                    wUpdateTime.setTimeInMillis(mCity.lastUpdate);
+                    if(wUpdateTime.get(Calendar.HOUR_OF_DAY) > 19){
+//                        Picasso.with(getActivity()).load(Util.getBackgroundRandom(Util.NIGTH_CLEAR_SKY)).into(mBackImage);
+                        Picasso.with(getActivity()).load(Util.setWheatherBackground(mCity.listDays.get(0).nightImage)).into(mBackImage);
+                    }
+                    else{
+                        Picasso.with(getActivity()).load(Util.setWheatherBackground(mCity.listDays.get(0).morningImage)).into(mBackImage);
+                    }
                 }
 
             }
         });
+
+        mUpdatedTime.setText(getString(R.string.update_time) + " " + Util.getDate(mCity.lastUpdate));
 
         //NextDays
         if(mCity.nextDaysError.isEmpty()) {
@@ -179,7 +231,7 @@ public class CityFragment extends Fragment {
             mDegreeDay3.setText(mCity.listDays.get(3).minDegree + "/" + mCity.listDays.get(3).maxDegree);
             mDay3.setText(mCity.listDays.get(3).day);
         }
-
+        mScroll.fullScroll(ScrollView.FOCUS_UP);
     }
 
     private void hideMorningInfo(){
@@ -197,7 +249,7 @@ public class CityFragment extends Fragment {
             mDegreeDay1.setTextColor(getResources().getColor(R.color.colorPrimary));
             setUpDayX(mCity.listDays.get(1));
             mExpandableDayX.expand();
-            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+//            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
         }
         else{
             resetDayscolor();
@@ -214,7 +266,7 @@ public class CityFragment extends Fragment {
             mDegreeDay2.setTextColor(getResources().getColor(R.color.colorPrimary));
             setUpDayX(mCity.listDays.get(2));
             mExpandableDayX.expand();
-            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+//            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
         }
         else{
             resetDayscolor();
@@ -231,7 +283,7 @@ public class CityFragment extends Fragment {
             mDegreeDay3.setTextColor(getResources().getColor(R.color.colorPrimary));
             setUpDayX(mCity.listDays.get(3));
             mExpandableDayX.expand();
-            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
+//            mScroll.fullScroll(ScrollView.FOCUS_DOWN);
         }
         else{
             resetDayscolor();
@@ -258,6 +310,66 @@ public class CityFragment extends Fragment {
         mImgDay3.setTextColor(getResources().getColor(R.color.white));
         mDay3.setTextColor(getResources().getColor(R.color.white));
         mDegreeDay3.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    public void updateCity() {
+        if(preloader != null && preloader.isShowing()){
+            preloader.dismiss();
+        }
+        preloader = Util.Preloader(getActivity(), R.string.updating_city);
+        App.dataController().getCityWeather(getActivity(), mCity.city, mCity.stateId, new OnUpdateCityCallback());
+    }
+
+    private class OnUpdateCityCallback implements ObjectCallback {
+        @Override
+        public void done(Exception e, final Object object) {
+            if(preloader != null && preloader.isShowing()){
+                preloader.dismiss();
+            }
+            if(e != null) {
+//                insertError(e);
+                return;
+            }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCity = (City) object;
+                    initView();
+                    SharedPreferencesController.updateCity(getActivity(), mCity);
+                }
+            });
+
+        }
+    }
+
+    @OnClick(R.id.delete_city)
+    public void deleteCity(View view){
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                if(which == DialogInterface.BUTTON_POSITIVE) {
+                    SharedPreferencesController.deleteCity(getActivity(), mCity);
+                    ((MainActivity)getActivity()).deleteCityFromPager(mCity);
+                }
+            }
+        };
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setCancelable(false);
+        builder.setMessage(R.string.confirm_delete_city);
+        builder.setPositiveButton(R.string.accept, listener);
+        builder.setNegativeButton(R.string.cancel, listener);
+        builder.create().show();
+    }
+
+    @OnClick(R.id.add_city)
+    public void addCity(View view){
+        ((MainActivity)getActivity()).newCity();
+    }
+
+    @OnClick(R.id.refresh_city)
+    public void refreshCity(View view){
+        updateCity();
     }
 
 }

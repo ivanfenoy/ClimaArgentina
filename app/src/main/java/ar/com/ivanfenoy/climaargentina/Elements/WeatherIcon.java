@@ -263,7 +263,8 @@ public class WeatherIcon extends IconTextView {
             if(StringSimilarity.similarity(name, "depejado") > 0.8){
                 setText("{wi_yahoo_31}");
             }
-            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
+            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
                 setText("{wi_yahoo_33}");
             }
             else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
@@ -281,7 +282,7 @@ public class WeatherIcon extends IconTextView {
             else if(name.contains("inest") && name.contains("lluvia")){
                 setText("{wi_yahoo_13}");
             }
-            else if(name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
+            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
                 setText("{wi_yahoo_3}");
             }
             else if(StringSimilarity.similarity(name, "nieve") > 0.8){
@@ -302,7 +303,8 @@ public class WeatherIcon extends IconTextView {
             if(StringSimilarity.similarity(name, "depejado") > 0.8){
                 setText("{wi_yahoo_32}");
             }
-            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8){
+            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
                 setText("{wi_yahoo_34}");
             }
             else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
@@ -320,7 +322,7 @@ public class WeatherIcon extends IconTextView {
             else if(name.contains("inest") && name.contains("lluvia")){
                 setText("{wi_yahoo_13}");
             }
-            else if(name.contains("tormenta_chico_movil")){
+            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormenta_chico_movil")){
                 setText("{wi_yahoo_3}");
             }
             else if(name.contains("tormentasol_chico_movil")){

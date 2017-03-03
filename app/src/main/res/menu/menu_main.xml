@@ -4,6 +4,13 @@
     tools:context=".activities.MainActivity">
 
     <item
+        android:id="@+id/refresh"
+        android:orderInCategory="100"
+        android:title=""
+        app:showAsAction="always"
+        android:visible="true" />
+
+    <item
         android:id="@+id/action_add"
         android:orderInCategory="100"
         android:title=""
