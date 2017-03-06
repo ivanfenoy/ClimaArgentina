@@ -28,6 +28,7 @@
     <string name="yes">SI</string>
     <string name="cancel">Cancelar</string>
     <string name="accept">Aceptar</string>
+    <string name="no_connection">No posee una conexión a internet. Es necesaria para obtener el estado del clima.</string>
 
     <string-array name="list_states">
         <item>Capital Federal</item>

@@ -9,7 +9,7 @@ import android.support.v4.view.ViewPager;
 import java.util.ArrayList;
 
 import ar.com.ivanfenoy.climaargentina.Fragments.CityFragment;
-import ar.com.ivanfenoy.climaargentina.MainActivity;
+import ar.com.ivanfenoy.climaargentina.Activities.MainActivity;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 
 /**

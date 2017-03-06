@@ -3,7 +3,6 @@ package ar.com.ivanfenoy.climaargentina.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.text.Layout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,7 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 
 import ar.com.ivanfenoy.climaargentina.Controllers.SharedPreferencesController;
-import ar.com.ivanfenoy.climaargentina.MainActivity;
+import ar.com.ivanfenoy.climaargentina.Activities.MainActivity;
 import ar.com.ivanfenoy.climaargentina.R;
 import ar.com.ivanfenoy.climaargentina.Utils.Util;
 import butterknife.Bind;

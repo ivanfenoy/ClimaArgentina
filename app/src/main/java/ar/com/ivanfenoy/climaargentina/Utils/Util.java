@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
@@ -44,8 +45,7 @@ public class Util {
         Toast.makeText(context, msg, length).show();
     }
 
-    public static String getDate(long milliSeconds)
-    {
+    public static String getDate(long milliSeconds){
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(milliSeconds);
@@ -156,5 +156,29 @@ public class Util {
             }
         }
         return wRta;
+    }
+
+    public static boolean isOnline() {
+
+        Runtime runtime = Runtime.getRuntime();
+        try {
+
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
+    }
+
+    public static int getStatusBarHeight(Context pContext) {
+        int result = 0;
+        int resourceId = pContext.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = pContext.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

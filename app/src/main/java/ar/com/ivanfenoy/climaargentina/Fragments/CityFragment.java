@@ -1,22 +1,17 @@
 package ar.com.ivanfenoy.climaargentina.Fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,15 +22,13 @@ import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.joanzapata.iconify.widget.IconTextView;
 import com.squareup.picasso.Picasso;
 
-import org.jsoup.helper.StringUtil;
-
 import java.util.Calendar;
 
 import ar.com.ivanfenoy.climaargentina.App;
 import ar.com.ivanfenoy.climaargentina.Controllers.SharedPreferencesController;
 import ar.com.ivanfenoy.climaargentina.Elements.WeatherIcon;
 import ar.com.ivanfenoy.climaargentina.Interfaces.ObjectCallback;
-import ar.com.ivanfenoy.climaargentina.MainActivity;
+import ar.com.ivanfenoy.climaargentina.Activities.MainActivity;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
 import ar.com.ivanfenoy.climaargentina.R;
@@ -47,6 +40,7 @@ import butterknife.OnClick;
 public class CityFragment extends Fragment {
     @Bind(R.id.add_city)IconTextView mAddCity;
     @Bind(R.id.refresh_city)IconTextView mRefreshCity;
+    @Bind(R.id.rl_content)RelativeLayout mRlContent;
 //    @Bind(R.id.swipe) SwipeRefreshLayout mSwipe;
     @Bind(R.id.scroll) ScrollView mScroll;
     @Bind(R.id.rl_current_state)RelativeLayout mRlCurrentState;
@@ -141,13 +135,19 @@ public class CityFragment extends Fragment {
         wNow.add(Calendar.HOUR, -2);
 
         if(wCal.before(wNow)){
-            updateCity();
+            if(Util.isOnline()) {
+                updateCity();
+            }
+            else{
+                Util.Toast(getActivity(), R.string.no_connection);
+            }
         }
         initView();
 
     }
 
     private void initView() {
+        mRlContent.setPadding(0, Util.getStatusBarHeight(getActivity()), 0, 0);
         ViewTreeObserver vto = mRootView.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -166,7 +166,7 @@ public class CityFragment extends Fragment {
                 {
                     wActionBarHeight = TypedValue.complexToDimensionPixelSize(wTv.data,getResources().getDisplayMetrics());
                 }
-                mRlCurrentState.getLayoutParams().height = height - wActionBarHeight;
+                mRlCurrentState.getLayoutParams().height = height - wActionBarHeight - Util.getStatusBarHeight(getActivity());
 
                 if(mCity.actualError.isEmpty()) {
                     mImgCurrentState.setIcon(mCity.actualImage);
@@ -369,7 +369,12 @@ public class CityFragment extends Fragment {
 
     @OnClick(R.id.refresh_city)
     public void refreshCity(View view){
-        updateCity();
+        if(Util.isOnline()) {
+            updateCity();
+        }
+        else{
+            Util.Toast(getActivity(), R.string.no_connection);
+        }
     }
 
 }
