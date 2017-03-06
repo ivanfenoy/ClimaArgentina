@@ -88,7 +88,8 @@ public class Util {
         }
         else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
                 || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8
-                || StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
+                || StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+                || StringSimilarity.similarity(name, "desmejorando") > 0.8){
             if(isMorning){
                 return getBackgroundRandom(DAY_CLOUD_SKY);
             }

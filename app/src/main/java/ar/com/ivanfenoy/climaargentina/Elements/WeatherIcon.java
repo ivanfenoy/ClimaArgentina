@@ -267,7 +267,8 @@ public class WeatherIcon extends IconTextView {
                     || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
                 setText("{wi_yahoo_33}");
             }
-            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
+            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
                 setText("{wi_yahoo_27}");
             }
             else if(StringSimilarity.similarity(name, "nublado") > 0.8){
@@ -307,7 +308,8 @@ public class WeatherIcon extends IconTextView {
                     || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
                 setText("{wi_yahoo_34}");
             }
-            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8){
+            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
                 setText("{wi_yahoo_26}");
             }
             else if(StringSimilarity.similarity(name, "nublado") > 0.8){

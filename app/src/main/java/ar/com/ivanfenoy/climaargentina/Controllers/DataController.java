@@ -140,6 +140,7 @@ public class DataController {
 
                     pCity.nextDaysError = "";
 
+                    SharedPreferencesController.updateCity(pContext, pCity);
                     Log.d("NEXT DAYS", "OK");
 
                 } catch (IOException e) {
@@ -157,7 +158,6 @@ public class DataController {
                     pCity.lastUpdate = wCal.getTimeInMillis();
 
                     pCallback.done(null, pCity);
-                    SharedPreferencesController.updateCity(pContext, pCity);
 
                 }
             }
