@@ -88,6 +88,7 @@ public class CityFragment extends Fragment {
     @Bind(R.id.img_morning_day_x)WeatherIcon mDayXMorningImage;
     @Bind(R.id.img_night_day_x)WeatherIcon mDayXNightImage;
 
+    @Bind(R.id.city_name)TextView mCityName;
     @Bind(R.id.update_time)TextView mUpdatedTime;
     @Bind(R.id.back_image) ImageView mBackImage;
 
@@ -202,6 +203,7 @@ public class CityFragment extends Fragment {
             }
         });
 
+        mCityName.setText(mCity.city);
         mUpdatedTime.setText(getString(R.string.update_time) + " " + Util.getDate(mCity.lastUpdate));
 
         //NextDays
@@ -294,8 +296,8 @@ public class CityFragment extends Fragment {
     private void setUpDayX(Day pDay) {
         mDayXMaxDegree.setText(pDay.maxDegree);
         mDayXMinDegree.setText(pDay.minDegree);
-        mDayXMorningText.setText(pDay.morningText);
-        mDayXNightText.setText(pDay.nightText);
+        mDayXMorningText.setText(Util.capitalize(pDay.morningText));
+        mDayXNightText.setText(Util.capitalize(pDay.nightText));
         mDayXMorningImage.setIcon(pDay.morningImage);
         mDayXNightImage.setIcon(pDay.nightImage);
     }

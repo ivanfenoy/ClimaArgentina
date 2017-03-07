@@ -406,7 +406,7 @@ public class WeatherIcon extends IconTextView {
             else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
                 wRta = "{wi_yahoo_11}";
             }
-            else if(name.contains("inest") && name.contains("lluvia")){
+            else if((name.contains("inest") && name.contains("lluvia")) || StringSimilarity.similarity(name, "lluv-lloviz") > 0.8){
                 wRta = "{wi_yahoo_13}";
             }
             else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
@@ -447,7 +447,7 @@ public class WeatherIcon extends IconTextView {
             else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
                 wRta = "{wi_yahoo_11}";
             }
-            else if(name.contains("inest") && name.contains("lluvia")){
+            else if((name.contains("inest") && name.contains("lluvia")) || StringSimilarity.similarity(name, "lluv-lloviz") > 0.8){
                 wRta = "{wi_yahoo_13}";
             }
             else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormenta_chico_movil")){
