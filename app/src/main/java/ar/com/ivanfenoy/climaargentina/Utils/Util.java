@@ -6,6 +6,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
@@ -180,5 +181,15 @@ public class Util {
             result = pContext.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static int getResourceId(Context pContext, String pVariableName, String pResourcename, String pPackageName)
+    {
+        try {
+            return pContext.getResources().getIdentifier(pVariableName, pResourcename, pPackageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 }

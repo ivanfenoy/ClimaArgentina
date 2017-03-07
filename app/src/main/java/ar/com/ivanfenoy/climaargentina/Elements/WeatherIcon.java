@@ -248,98 +248,99 @@ public class WeatherIcon extends IconTextView {
     }
 
     public void setIcon(String image){
-        boolean isMorning;
-        if (image.contains("luna") || image.contains("noche")){
-            isMorning = false;
-        }
-        else{
-            isMorning = true;
-        }
-        if(!isMorning){
-            String name = image.replace(".png","")
-                                .replace("http://www.smn.gov.ar/prongraf/iconos/luna/","")
-                                .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
-                                .replace("images/iconos_noche/","");
-            if(StringSimilarity.similarity(name, "depejado") > 0.8){
-                setText("{wi_yahoo_31}");
-            }
-            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
-                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
-                setText("{wi_yahoo_33}");
-            }
-            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
-                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
-                setText("{wi_yahoo_27}");
-            }
-            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
-                setText("{wi_yahoo_26}");
-            }
-            else if(name.contains("ventoso") || name.contains("viento")){
-                setText("{wi_yahoo_24}");
-            }
-            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
-                setText("{wi_yahoo_11}");
-            }
-            else if(name.contains("inest") && name.contains("lluvia")){
-                setText("{wi_yahoo_13}");
-            }
-            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
-                setText("{wi_yahoo_3}");
-            }
-            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
-                setText("{wi_yahoo_25}");
-            }
-            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
-                setText("{wi_yahoo_7}");
-            }
-            else if(name.contains("inestclluvia_luna_movil")){
-                setText("{wi_yahoo_42}");
-            }
-        }
-        else{
-            String name = image.replace(".png","")
-                    .replace("http://www.smn.gov.ar/prongraf/iconos/","")
-                    .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
-                    .replace("images/iconos_dia/","");
-            if(StringSimilarity.similarity(name, "depejado") > 0.8){
-                setText("{wi_yahoo_32}");
-            }
-            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
-                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
-                setText("{wi_yahoo_34}");
-            }
-            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
-                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
-                setText("{wi_yahoo_26}");
-            }
-            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
-                setText("{wi_yahoo_26}");
-            }
-            else if(name.contains("ventoso") || name.contains("viento")){
-                setText("{wi_yahoo_24}");
-            }
-            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
-                setText("{wi_yahoo_11}");
-            }
-            else if(name.contains("inest") && name.contains("lluvia")){
-                setText("{wi_yahoo_13}");
-            }
-            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormenta_chico_movil")){
-                setText("{wi_yahoo_3}");
-            }
-            else if(name.contains("tormentasol_chico_movil")){
-                setText("{wi_yahoo_37}");
-            }
-            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
-                setText("{wi_yahoo_25}");
-            }
-            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
-                setText("{wi_yahoo_7}");
-            }
-            else if(name.contains("inestclluvia_sol_movil")){
-                setText("{wi_yahoo_37}");
-            }
-        }
+        setText(getIcon(image));
+//        boolean isMorning;
+//        if (image.contains("luna") || image.contains("noche")){
+//            isMorning = false;
+//        }
+//        else{
+//            isMorning = true;
+//        }
+//        if(!isMorning){
+//            String name = image.replace(".png","")
+//                                .replace("http://www.smn.gov.ar/prongraf/iconos/luna/","")
+//                                .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
+//                                .replace("images/iconos_noche/","");
+//            if(StringSimilarity.similarity(name, "depejado") > 0.8){
+//                setText("{wi_yahoo_31}");
+//            }
+//            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+//                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
+//                setText("{wi_yahoo_33}");
+//            }
+//            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+//                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
+//                setText("{wi_yahoo_27}");
+//            }
+//            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
+//                setText("{wi_yahoo_26}");
+//            }
+//            else if(name.contains("ventoso") || name.contains("viento")){
+//                setText("{wi_yahoo_24}");
+//            }
+//            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
+//                setText("{wi_yahoo_11}");
+//            }
+//            else if(name.contains("inest") && name.contains("lluvia")){
+//                setText("{wi_yahoo_13}");
+//            }
+//            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
+//                setText("{wi_yahoo_3}");
+//            }
+//            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
+//                setText("{wi_yahoo_25}");
+//            }
+//            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
+//                setText("{wi_yahoo_7}");
+//            }
+//            else if(name.contains("inestclluvia_luna_movil")){
+//                setText("{wi_yahoo_42}");
+//            }
+//        }
+//        else{
+//            String name = image.replace(".png","")
+//                    .replace("http://www.smn.gov.ar/prongraf/iconos/","")
+//                    .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
+//                    .replace("images/iconos_dia/","");
+//            if(StringSimilarity.similarity(name, "depejado") > 0.8){
+//                setText("{wi_yahoo_32}");
+//            }
+//            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+//                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
+//                setText("{wi_yahoo_34}");
+//            }
+//            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+//                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
+//                setText("{wi_yahoo_26}");
+//            }
+//            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
+//                setText("{wi_yahoo_26}");
+//            }
+//            else if(name.contains("ventoso") || name.contains("viento")){
+//                setText("{wi_yahoo_24}");
+//            }
+//            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
+//                setText("{wi_yahoo_11}");
+//            }
+//            else if(name.contains("inest") && name.contains("lluvia")){
+//                setText("{wi_yahoo_13}");
+//            }
+//            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormenta_chico_movil")){
+//                setText("{wi_yahoo_3}");
+//            }
+//            else if(name.contains("tormentasol_chico_movil")){
+//                setText("{wi_yahoo_37}");
+//            }
+//            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
+//                setText("{wi_yahoo_25}");
+//            }
+//            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
+//                setText("{wi_yahoo_7}");
+//            }
+//            else if(name.contains("inestclluvia_sol_movil")){
+//                setText("{wi_yahoo_37}");
+//            }
+//        }
     }
 
     /*Dia:
@@ -370,4 +371,101 @@ public class WeatherIcon extends IconTextView {
     -lluvia y nieve, llovizna y nieve: wi-yahoo-7
     -inestable con lluvia: wi-yahoo-41 (inestclluvia_luna_movil)
     */
+
+    public static String getIcon(String image){
+        String wRta = "";
+        boolean isMorning;
+        if (image.contains("luna") || image.contains("noche")){
+            isMorning = false;
+        }
+        else{
+            isMorning = true;
+        }
+        if(!isMorning){
+            String name = image.replace(".png","")
+                    .replace("http://www.smn.gov.ar/prongraf/iconos/luna/","")
+                    .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
+                    .replace("images/iconos_noche/","");
+            if(StringSimilarity.similarity(name, "depejado") > 0.8){
+                wRta = "{wi_yahoo_31}";
+            }
+            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
+                wRta = "{wi_yahoo_33}";
+            }
+            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
+                wRta = "{wi_yahoo_27}";
+            }
+            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
+                wRta = "{wi_yahoo_26}";
+            }
+            else if(name.contains("ventoso") || name.contains("viento")){
+                wRta = "{wi_yahoo_24}";
+            }
+            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
+                wRta = "{wi_yahoo_11}";
+            }
+            else if(name.contains("inest") && name.contains("lluvia")){
+                wRta = "{wi_yahoo_13}";
+            }
+            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormentaluna_chico_movil") || name.contains("tormenta_chico_movil")){
+                wRta = "{wi_yahoo_3}";
+            }
+            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
+                wRta = "{wi_yahoo_25}";
+            }
+            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
+                wRta = "{wi_yahoo_7}";
+            }
+            else if(name.contains("inestclluvia_luna_movil")){
+                wRta = "{wi_yahoo_42}";
+            }
+        }
+        else{
+            String name = image.replace(".png","")
+                    .replace("http://www.smn.gov.ar/prongraf/iconos/","")
+                    .replace("http://www.smn.gov.ar/mobile/images/iconos_chicos/","")
+                    .replace("images/iconos_dia/","");
+            if(StringSimilarity.similarity(name, "depejado") > 0.8){
+                wRta = "{wi_yahoo_32}";
+            }
+            else if(StringSimilarity.similarity(name, "algonublado") > 0.8 || StringSimilarity.similarity(name, "nubaum") > 0.8
+                    || StringSimilarity.similarity(name, "nubdismin") > 0.8 || StringSimilarity.similarity(name, "parcialmentenublado") > 0.8){
+                wRta = "{wi_yahoo_34}";
+            }
+            else if(StringSimilarity.similarity(name, "inestable") > 0.8 || StringSimilarity.similarity(name, "parcmnub") > 0.8
+                    || StringSimilarity.similarity(name, "desmejorando") > 0.8){
+                wRta = "{wi_yahoo_26}";
+            }
+            else if(StringSimilarity.similarity(name, "nublado") > 0.8){
+                wRta = "{wi_yahoo_26}";
+            }
+            else if(name.contains("ventoso") || name.contains("viento")){
+                wRta = "{wi_yahoo_24}";
+            }
+            else if(StringSimilarity.similarity(name, "lluvia") > 0.8){
+                wRta = "{wi_yahoo_11}";
+            }
+            else if(name.contains("inest") && name.contains("lluvia")){
+                wRta = "{wi_yahoo_13}";
+            }
+            else if(StringSimilarity.similarity(name, "tormenta") > 0.8 || name.contains("tormenta_chico_movil")){
+                wRta = "{wi_yahoo_3}";
+            }
+            else if(name.contains("tormentasol_chico_movil")){
+                wRta = "{wi_yahoo_37}";
+            }
+            else if(StringSimilarity.similarity(name, "nieve") > 0.8){
+                wRta = "{wi_yahoo_25}";
+            }
+            else if(StringSimilarity.similarity(name, "lluvianieve") > 0.8){
+                wRta = "{wi_yahoo_7}";
+            }
+            else if(name.contains("inestclluvia_sol_movil")){
+                wRta = "{wi_yahoo_37}";
+            }
+        }
+        return wRta;
+    }
 }
