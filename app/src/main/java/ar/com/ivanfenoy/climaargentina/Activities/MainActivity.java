@@ -1,6 +1,10 @@
 package ar.com.ivanfenoy.climaargentina.Activities;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
@@ -17,6 +21,7 @@ import ar.com.ivanfenoy.climaargentina.Fragments.CityFragment;
 import ar.com.ivanfenoy.climaargentina.Interfaces.ObjectCallback;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.R;
+import ar.com.ivanfenoy.climaargentina.Services.UpdateWeatherService;
 import ar.com.ivanfenoy.climaargentina.Utils.Util;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -75,6 +80,12 @@ public class MainActivity extends AppCompatActivity {
                 Util.Toast(this, R.string.no_connection);
             }
         }
+
+        Intent ishintent = new Intent(this, UpdateWeatherService.class);
+        PendingIntent pintent = PendingIntent.getService(this, 0, ishintent, 0);
+        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pintent);
+        alarm.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),5000, pintent);
 
     }
 

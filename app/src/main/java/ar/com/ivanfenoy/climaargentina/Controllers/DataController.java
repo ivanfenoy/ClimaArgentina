@@ -14,6 +14,7 @@ import java.util.Calendar;
 import ar.com.ivanfenoy.climaargentina.Interfaces.ObjectCallback;
 import ar.com.ivanfenoy.climaargentina.Models.City;
 import ar.com.ivanfenoy.climaargentina.Models.Day;
+import ar.com.ivanfenoy.climaargentina.R;
 import ar.com.ivanfenoy.climaargentina.Utils.Util;
 
 /**
@@ -163,5 +164,115 @@ public class DataController {
             }
         };
         wNextDaysStateThread.start();
+    }
+
+    public void getWeatherAlerts(final Context pContext, final City pCity, final ObjectCallback pCallback){
+        Thread wWeatherAlertsThread = new Thread() {
+            public void run() {
+                Document wDoc = null;
+                try {
+                    wDoc = Jsoup.connect("http://www.smn.gov.ar/?mod=pron&id=51").get();
+
+                    Element wDiv = wDoc.select("div#accordion").first();
+                    if(wDiv != null){
+                        Elements wH2s = wDiv.select("h2");
+                        for (Element wElem: wH2s) {
+                            String title = Util.capitalize(wElem.select("b > div > span").get(0).html());
+                            String zone = Util.capitalize(wElem.select("b > div > span").get(1).html().replace("&nbsp;", ""));
+                            String message =  Util.capitalize(wDiv.select("div.content > div[style=padding-top:10px;text-align:justify; line-height:18px] > span[style=font-weight:normal;]").get(wH2s.indexOf(wElem)).html());
+                            String state = pContext.getResources().getStringArray(R.array.list_states)[pCity.stateId];
+                            if(zone.toLowerCase().contains(state.toLowerCase()) || zone.toLowerCase().contains(pCity.city.toLowerCase())){
+                                Log.d("ALERTA", title + "\n" + zone + "\n" +  message);
+                            }
+                        }
+                    }
+//                    wDoc = Jsoup.connect("http://www.smn.gov.ar/mobile/index.php").get();
+//
+//                    Elements wDivAlerts = wDoc.select("div#alertas");
+//                    if(wDivAlerts.size() > 0){
+//                        for (Element wElement: wDivAlerts) {
+//
+//                            String title = wElement.select("h3").first().select("span").first().html();
+//                            if(title.contains("ALERTA METEOROLOGICA N°")){
+//                                String message = wElement.select("p").attr("class", "texto1").first().html();
+//                            } else if(title.contains("Aviso Meteorológico a muy Corto Plazo N°")){
+//                                String message = wElement.select("p").attr("align", "justify").first().html();
+//                            }
+//
+//                        }
+//                    }
+
+//                    for (Element wElement: wDivs) {
+//                        Day wDay = new Day();
+//                        Elements wTrs = wElement.select("h6").first().select("table.texto_encabezado").first().select("tr");
+//                        //Day name
+//                        wDay.day = wTrs.get(0).select("td").first().html();
+//
+//                        //images
+//                        if(wTrs.get(1).select("td > img").size() > 1) {
+//                            //morning image
+//                            if (wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")) {
+//                                wDay.morningImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
+//                            } else {
+//                                wDay.morningImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
+//                            }
+//
+//                            //night image
+//                            if (wTrs.get(1).select("td > img").get(1).attr("src").contains("../../..")) {
+//                                wDay.nightImage = wTrs.get(1).select("td > img").get(1).attr("src").replace("../../..", "http://www.smn.gov.ar");
+//                            } else {
+//                                wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(1).attr("src");
+//                            }
+//                        }
+//                        else{
+//                            if (wTrs.get(1).select("td > img").get(0).attr("src").contains("../../..")) {
+//                                wDay.nightImage = wTrs.get(1).select("td > img").get(0).attr("src").replace("../../..", "http://www.smn.gov.ar");
+//                            } else {
+//                                wDay.nightImage = "http://www.smn.gov.ar/mobile/" + wTrs.get(1).select("td > img").get(0).attr("src");
+//                            }
+//                        }
+//
+//                        //temps states
+//                        Elements wPs = wElement.select("p");
+//                        if(wPs.size() > 1) { //Significa que ya no aparece el clima de la mañana
+//                            wDay.morningText = wPs.get(0).html();
+//                            wDay.nightText = wPs.get(1).html();
+//                        }
+//                        else{
+//                            wDay.nightText = wPs.get(0).html();
+//                        }
+//
+//                        //temps
+//                        wDay.minDegree = wElement.select("table.texto_blanco").first().select("tr").get(0).select("td").get(1).html();
+//                        wDay.maxDegree = wElement.select("table.texto_blanco").first().select("tr").get(1).select("td").get(1).html();
+//
+//                        pCity.listDays.add(wDay);
+//                    }
+//
+//                    pCity.nextDaysError = "";
+//
+//                    SharedPreferencesController.updateCity(pContext, pCity);
+//                    Log.d("NEXT DAYS", "OK");
+
+                } catch (IOException e) {
+                    if(wDoc != null){
+                        Elements wErrors = wDoc.select("p.texto_verde");
+                        if(!wErrors.isEmpty()){
+                            pCity.nextDaysError = wErrors.first().html();
+                        }
+                    }
+
+                    Log.d("NEXT DAYS", "ERROR");
+                }
+                finally {
+                    Calendar wCal = Calendar.getInstance();
+                    pCity.lastUpdate = wCal.getTimeInMillis();
+
+                    pCallback.done(null, pCity);
+
+                }
+            }
+        };
+        wWeatherAlertsThread.start();
     }
 }
